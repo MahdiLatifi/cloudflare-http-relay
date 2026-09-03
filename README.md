@@ -244,27 +244,33 @@ Two options: **manual** (dashboard, no tooling) or **Wrangler** (CLI, recommende
 
 ### Option 2 — Deploy with Wrangler (recommended)
 
-Requires Node.js ≥ 16 and npm.
+Requires Node.js ≥ 22 (Wrangler 4's requirement) and npm.
 
-1. **Install Wrangler**
+1. **Install dependencies**
 
    ```bash
-   npm install -g wrangler
-   # or use npx per-command: npx wrangler <cmd>
+   npm install
    ```
+
+   Wrangler can also be installed globally (`npm install -g wrangler`) or run ad hoc via `npx wrangler <cmd>`.
 
 2. **Log in**
 
    ```bash
-   wrangler login
+   npx wrangler login
    ```
 
-3. **Create `wrangler.toml`** in the repo root:
+3. **Configure `wrangler.toml`**
+
+   The repo already ships a [`wrangler.toml`](./wrangler.toml) — no need to create it:
 
    ```toml
    name = "http-relay"
    main = "worker.js"
-   compatibility_date = "2024-09-23"
+   compatibility_date = "2026-09-03"
+
+   [observability]
+   enabled = true
 
    # Plain-text variables (non-secret) — keep secrets out of this file
    [vars]
@@ -276,17 +282,20 @@ Requires Node.js ≥ 16 and npm.
    # MAX_TIMEOUT_MS = "30000"
    ```
 
+   Uncomment/adjust `[vars]` as needed; add `routes` for a custom domain.
+
 4. **Set the secret**
 
    ```bash
-   wrangler secret put SECRET
-   # paste your token (≥ 16 chars) when prompted
+   npm run secret
+   # → runs: wrangler secret put SECRET — paste your token (≥ 16 chars) when prompted
    ```
 
 5. **Deploy**
 
    ```bash
-   wrangler deploy
+   npm run deploy
+   # → runs: wrangler deploy
    ```
 
    Wrangler prints the `workers.dev` URL, e.g. `https://http-relay.<your-subdomain>.workers.dev`.
@@ -310,15 +319,35 @@ Requires Node.js ≥ 16 and npm.
    ]
    ```
 
+## Local development
+
+```bash
+cp .dev.vars.example .dev.vars   # then edit SECRET (≥ 16 chars)
+npm install
+npm run dev                      # → wrangler dev, usually http://localhost:8787
+```
+
+`.dev.vars` supplies env vars locally (it's git-ignored — never commit real values). Then:
+
+```bash
+curl http://localhost:8787/healthz
+
+curl -X POST http://localhost:8787/proxy \
+  -H "Authorization: Bearer <your-local-secret>" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://httpbin.org/get", "method": "GET"}'
+```
+
 Useful commands:
 
 | Command                      | Purpose                                   |
 | ---------------------------- | ----------------------------------------- |
-| `wrangler dev`               | Local dev server (note: SSRF checks assume production network semantics) |
-| `wrangler deploy`            | Deploy to production                      |
-| `wrangler secret list`       | List configured secret names              |
-| `wrangler tail`              | Stream live logs (the relay's JSON log lines) |
-| `wrangler delete`            | Remove the Worker                         |
+| `npm run dev`                | Local dev server (`wrangler dev`)         |
+| `npm run deploy`             | Deploy to production (`wrangler deploy`)  |
+| `npm run tail`               | Stream live logs (`wrangler tail`)        |
+| `npm run secret`             | Set/rotate the `SECRET` (`wrangler secret put SECRET`) |
+| `npx wrangler secret list`   | List configured secret names              |
+| `npx wrangler delete`        | Remove the Worker                         |
 
 ---
 
