@@ -1,0 +1,25 @@
+# Cloudflare HTTP Relay — Wrangler configuration
+# Docs: https://developers.cloudflare.com/workers/wrangler/configuration/
+
+name = "http-relay"
+main = "worker.js"
+compatibility_date = "2024-09-23"
+
+# Observability: structured JSON logs visible in the dashboard (Logs tab)
+[observability]
+enabled = true
+
+# Non-secret configuration (plain-text env vars).
+# Uncomment / adjust as needed. NEVER put SECRET here — use `wrangler secret put SECRET`.
+[vars]
+# ALLOWED_TARGET_HOSTS = "api.github.com,api.openai.com"
+# RATE_LIMIT_ENABLED = "true"
+# RATE_LIMIT_RPM = "100"
+# MAX_BODY_SIZE = "1048576"
+# DEFAULT_TIMEOUT_MS = "20000"
+# MAX_TIMEOUT_MS = "30000"
+
+# Optional: custom domain (uncomment, replace with your domain, then `wrangler deploy`)
+# routes = [
+#   { pattern = "relay.example.com", custom_domain = true }
+# ]

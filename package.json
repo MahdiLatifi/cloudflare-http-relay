@@ -1,0 +1,18 @@
+{
+  "name": "cloudflare-http-relay",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Authenticated HTTP relay running on Cloudflare Workers with SSRF protection, rate limiting, and configurable limits",
+  "license": "MIT",
+  "type": "module",
+  "main": "worker.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "secret": "wrangler secret put SECRET"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

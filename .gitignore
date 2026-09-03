@@ -1,0 +1,16 @@
+# Editor
+.idea/
+.vscode/
+
+# Node
+node_modules/
+
+# Wrangler local state
+.wrangler/
+dist/
+
+# Local dev secrets (never commit real values)
+.dev.vars
+
+# OS
+.DS_Store
